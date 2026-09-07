@@ -1,0 +1,6 @@
+{
+  "name": "Fatboy Detailing",
+  "description": "Professional auto detailing in Wichita, Kansas featuring interior, exterior, and full ceramic details with seamless online appointment calendar scheduling.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
