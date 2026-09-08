@@ -176,7 +176,7 @@ export const Hero: React.FC<HeroProps> = ({ onOpenBooking, onExploreServices }) 
                     Starting Package
                   </span>
                   <span className="text-xl font-racing font-bold text-[#00e676]">
-                    $40 <span className="text-xs font-normal text-slate-400">/ Exterior Foam</span>
+                    $55 <span className="text-xs font-normal text-slate-400">/ Exterior Foam</span>
                   </span>
                 </div>
 
