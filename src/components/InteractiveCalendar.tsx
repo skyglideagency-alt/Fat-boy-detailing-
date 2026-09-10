@@ -87,11 +87,11 @@ export const InteractiveCalendar: React.FC<InteractiveCalendarProps> = ({
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 w-full max-w-full overflow-hidden">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         {/* Left Column: Interactive Month Grid */}
-        <div className="lg:col-span-7 bg-[#0c0e15] border border-slate-800/90 rounded-2xl p-5 shadow-xl">
+        <div className="lg:col-span-7 bg-[#0c0e15] border border-slate-800/90 rounded-2xl p-3.5 sm:p-5 shadow-xl overflow-hidden">
           
           {/* Header Month / Year & Controls */}
           <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
@@ -232,7 +232,7 @@ export const InteractiveCalendar: React.FC<InteractiveCalendarProps> = ({
         </div>
 
         {/* Right Column: Time Slot Selection */}
-        <div className="lg:col-span-5 bg-[#0c0e15] border border-slate-800/90 rounded-2xl p-5 flex flex-col justify-between shadow-xl">
+        <div className="lg:col-span-5 bg-[#0c0e15] border border-slate-800/90 rounded-2xl p-3.5 sm:p-5 flex flex-col justify-between shadow-xl overflow-hidden">
           <div>
             <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-800">
               <div className="flex items-center gap-2">

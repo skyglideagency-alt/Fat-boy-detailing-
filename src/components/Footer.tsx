@@ -10,7 +10,7 @@ interface FooterProps {
 
 export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onOpenMyBookings }) => {
   return (
-    <footer className="bg-[#05060a] border-t border-slate-800 text-slate-400 text-xs">
+    <footer className="bg-[#05060a] border-t border-slate-800 text-slate-400 text-xs w-full max-w-full overflow-hidden">
       {/* Upper CTA Banner */}
       <div className="border-b border-slate-800/80 bg-gradient-to-r from-red-950/30 via-emerald-950/20 to-slate-950 py-12 px-4 text-center">
         <div className="max-w-4xl mx-auto space-y-4">

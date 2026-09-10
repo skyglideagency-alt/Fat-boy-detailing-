@@ -15,7 +15,7 @@ export const ServicesSection: React.FC<ServicesSectionProps> = ({ onSelectServic
   const vehicleExtra = VEHICLE_CONFIGS[selectedVehicle].extraPrice;
 
   return (
-    <section id="services" className="py-20 bg-[#0a0c12] relative border-t border-slate-800/80">
+    <section id="services" className="py-20 bg-[#0a0c12] relative border-t border-slate-800/80 overflow-hidden">
       {/* Background glow accents */}
       <div className="absolute top-10 left-10 w-72 h-72 bg-emerald-500/5 rounded-full blur-[100px] pointer-events-none" />
       <div className="absolute bottom-10 right-10 w-72 h-72 bg-red-600/5 rounded-full blur-[100px] pointer-events-none" />

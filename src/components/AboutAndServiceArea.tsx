@@ -27,15 +27,15 @@ export const AboutAndServiceArea: React.FC = () => {
   };
 
   return (
-    <section id="about" className="py-20 bg-[#07080d] relative border-t border-slate-800">
+    <section id="about" className="py-20 bg-[#07080d] relative border-t border-slate-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Column: About Story & Mission with scroll animation */}
           <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6 }}
             className="lg:col-span-6 space-y-5"
@@ -95,8 +95,8 @@ export const AboutAndServiceArea: React.FC = () => {
 
           {/* Right Column: Wichita Service Area & Checker with scroll animation */}
           <motion.div 
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
+            initial={{ opacity: 0, y: 25 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-60px' }}
             transition={{ duration: 0.6, delay: 0.1 }}
             className="lg:col-span-6"

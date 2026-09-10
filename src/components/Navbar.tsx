@@ -24,22 +24,22 @@ export const Navbar: React.FC<NavbarProps> = ({
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
-      className="sticky top-0 z-40 w-full border-b border-white/10 bg-[#08090d]/90 backdrop-blur-md"
+      className="sticky top-0 z-40 w-full max-w-full overflow-hidden border-b border-white/10 bg-[#08090d]/90 backdrop-blur-md"
     >
       {/* Clean Top Bar */}
-      <div className="bg-gradient-to-r from-red-950/80 via-black to-emerald-950/80 border-b border-white/10 py-1.5 px-4 text-xs">
-        <div className="max-w-7xl mx-auto flex items-center justify-between text-slate-200">
-          <div className="flex items-center gap-2">
-            <span className="relative flex h-2 w-2">
+      <div className="bg-gradient-to-r from-red-950/80 via-black to-emerald-950/80 border-b border-white/10 py-1.5 px-3 sm:px-4 text-xs overflow-hidden">
+        <div className="max-w-7xl mx-auto flex items-center justify-center md:justify-between text-slate-200">
+          <div className="flex items-center gap-2 min-w-0">
+            <span className="relative flex h-2 w-2 flex-shrink-0">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#00e676] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#00e676]"></span>
             </span>
-            <span className="text-white tracking-wide uppercase font-bold text-[11px]">
+            <span className="text-white tracking-wide uppercase font-bold text-[10px] sm:text-[11px] truncate">
               Same-Day Detailing Slots Available in Wichita
             </span>
           </div>
 
-          <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
+          <div className="hidden md:flex items-center gap-4 text-xs text-slate-400 flex-shrink-0">
             <span className="flex items-center gap-1 text-emerald-400">
               <Clock className="w-3.5 h-3.5" /> Always Open (7 Days)
             </span>
@@ -58,10 +58,10 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Nav Header */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 sm:h-20 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
         {/* Brand Logo & Title */}
-        <a href="#" className="flex items-center gap-3 group">
-          <div className="relative w-12 h-12 sm:w-13 sm:h-13 rounded-xl overflow-hidden border border-emerald-500/40 bg-black shadow-lg shadow-emerald-500/10 transition-transform duration-300 group-hover:scale-105">
+        <a href="#" className="flex items-center gap-2 sm:gap-3 group min-w-0">
+          <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0 rounded-xl overflow-hidden border border-emerald-500/40 bg-black shadow-lg shadow-emerald-500/10 transition-transform duration-300 group-hover:scale-105">
             <img
               src={logoImg}
               alt="Fatboy Detailing Logo"
@@ -69,17 +69,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             />
           </div>
 
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="font-racing text-2xl sm:text-3xl font-bold tracking-wider text-chrome uppercase">
+          <div className="flex flex-col min-w-0">
+            <div className="flex items-center gap-1">
+              <span className="font-racing text-xl sm:text-3xl font-bold tracking-wider text-chrome uppercase">
                 FATBOY
               </span>
-              <span className="font-script text-2xl sm:text-3xl font-bold text-[#00e676] -rotate-6 transform drop-shadow-[0_2px_8px_rgba(0,230,118,0.7)]">
+              <span className="font-script text-xl sm:text-3xl font-bold text-[#00e676] -rotate-6 transform drop-shadow-[0_2px_8px_rgba(0,230,118,0.7)]">
                 Detailing
               </span>
             </div>
-            <span className="text-[10px] tracking-widest text-slate-400 font-medium uppercase -mt-1">
-              Wichita, KS • Precision Auto Care
+            <span className="text-[9px] sm:text-[10px] tracking-wider text-slate-400 font-medium uppercase -mt-0.5 truncate">
+              Wichita, KS • Precision Care
             </span>
           </div>
         </a>

@@ -28,7 +28,7 @@ export const BeforeAfterSlider: React.FC = () => {
   };
 
   return (
-    <section id="before-after" className="py-20 bg-[#090b10] relative border-t border-slate-800">
+    <section id="before-after" className="py-20 bg-[#090b10] relative border-t border-slate-800 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Section Header with scroll animation */}
@@ -77,16 +77,15 @@ export const BeforeAfterSlider: React.FC = () => {
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"
             />
 
-            {/* "Before" Image (Clipped layer) */}
+            {/* "Before" Image (Clipped layer using clip-path) */}
             <div
-              className="absolute inset-0 overflow-hidden pointer-events-none"
-              style={{ width: `${sliderPosition}%` }}
+              className="absolute inset-0 pointer-events-none overflow-hidden"
+              style={{ clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)` }}
             >
               <img
                 src={heroImg}
                 alt="Before Detailing"
-                className="absolute inset-0 w-full h-full object-cover max-w-none filter contrast-90 brightness-75 sepia-[0.35] blur-[0.6px]"
-                style={{ width: containerRef.current ? `${containerRef.current.clientWidth}px` : '100%' }}
+                className="absolute inset-0 w-full h-full object-cover filter contrast-90 brightness-75 sepia-[0.35] blur-[0.6px]"
               />
               <div className="absolute inset-0 bg-amber-950/20 backdrop-grayscale-[0.3] pointer-events-none" />
               
