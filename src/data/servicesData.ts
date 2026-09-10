@@ -146,9 +146,11 @@ export const WICHITA_SERVICE_AREAS = [
 export const BUSINESS_INFO = {
   name: 'Fatboy Detailing',
   ownerQuote: 'My page is bout my heart and soul for detailing an the amazing job I can do an I do it with love.',
-  phone: '(316) 214-3829',
-  phoneDisplay: '(316) 214-3829',
+  phone: '+1 316-284-7112',
+  phoneDisplay: '(316) 284-7112',
+  email: 'vivianna2335@yahoo.com',
+  address: 'Nevada, Wichita, KS, 67212',
   locationCity: 'Wichita, Kansas',
-  hours: 'Mon - Sun: 7:30 AM - 7:00 PM',
+  hours: 'Always Open (7 Days)',
   urgencyBanner: 'WE HAVE OPEN SPOTS FOR TODAY — CALL OR TEXT TO BOOK YOUR APPOINTMENT',
 };

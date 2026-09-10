@@ -1,5 +1,5 @@
 import React from 'react';
-import { Phone, MapPin, Clock, Calendar, Sparkles, Heart } from 'lucide-react';
+import { Phone, MapPin, Clock, Calendar, Sparkles, Heart, Mail } from 'lucide-react';
 import logoImg from '../assets/images/logo.jpg';
 import { BUSINESS_INFO } from '../data/servicesData';
 
@@ -114,7 +114,7 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onOpenMyBookings 
             <div className="space-y-2.5 text-xs text-slate-300">
               <div className="flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-red-400 flex-shrink-0" />
-                <span>Wichita, Kansas & Surrounding Metro</span>
+                <span>{BUSINESS_INFO.address}</span>
               </div>
               <div className="flex items-center gap-2">
                 <Phone className="w-4 h-4 text-[#00e676] flex-shrink-0" />
@@ -123,11 +123,17 @@ export const Footer: React.FC<FooterProps> = ({ onOpenBooking, onOpenMyBookings 
                 </a>
               </div>
               <div className="flex items-center gap-2">
+                <Mail className="w-4 h-4 text-emerald-400 flex-shrink-0" />
+                <a href={`mailto:${BUSINESS_INFO.email}`} className="hover:underline text-slate-300 hover:text-white">
+                  {BUSINESS_INFO.email}
+                </a>
+              </div>
+              <div className="flex items-center gap-2">
                 <Clock className="w-4 h-4 text-slate-400 flex-shrink-0" />
                 <span>{BUSINESS_INFO.hours}</span>
               </div>
-              <div className="pt-2 text-[11px] text-emerald-400 font-semibold">
-                Open for Same-Day Appointments
+              <div className="pt-1 text-[11px] text-emerald-400 font-semibold">
+                Always Open for Inquiries & Bookings
               </div>
             </div>
           </div>

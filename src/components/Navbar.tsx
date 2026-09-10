@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { Calendar, Phone, Sparkles, Clock, BookmarkCheck, Menu, X } from 'lucide-react';
+import { Calendar, Phone, Sparkles, Clock, BookmarkCheck, Menu, X, Mail } from 'lucide-react';
 import logoImg from '../assets/images/logo.jpg';
 import { BUSINESS_INFO } from '../data/servicesData';
 import { AppointmentBooking } from '../types';
@@ -41,11 +41,17 @@ export const Navbar: React.FC<NavbarProps> = ({
 
           <div className="hidden md:flex items-center gap-4 text-xs text-slate-400">
             <span className="flex items-center gap-1 text-emerald-400">
-              <Clock className="w-3.5 h-3.5" /> 7 Days: 7:30 AM - 7:00 PM
+              <Clock className="w-3.5 h-3.5" /> Always Open (7 Days)
             </span>
             <span>•</span>
-            <a href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`} className="hover:text-white font-medium">
-              Call/Text: {BUSINESS_INFO.phoneDisplay}
+            <a href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`} className="hover:text-white font-medium flex items-center gap-1">
+              <Phone className="w-3 h-3 text-red-400" />
+              {BUSINESS_INFO.phoneDisplay}
+            </a>
+            <span>•</span>
+            <a href={`mailto:${BUSINESS_INFO.email}`} className="hover:text-white font-medium flex items-center gap-1 text-slate-300">
+              <Mail className="w-3 h-3 text-emerald-400" />
+              {BUSINESS_INFO.email}
             </a>
           </div>
         </div>
@@ -236,6 +242,14 @@ export const Navbar: React.FC<NavbarProps> = ({
             >
               <Phone className="w-4 h-4" />
               <span>Call / Text: {BUSINESS_INFO.phoneDisplay}</span>
+            </a>
+
+            <a
+              href={`mailto:${BUSINESS_INFO.email}`}
+              className="w-full flex items-center justify-center gap-2 py-2 rounded-lg bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-white"
+            >
+              <Mail className="w-3.5 h-3.5 text-emerald-400" />
+              <span>{BUSINESS_INFO.email}</span>
             </a>
           </div>
         </motion.div>

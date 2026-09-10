@@ -808,14 +808,22 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                 </div>
               </div>
 
-              {/* Direct Detailer Call / Text */}
-              <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
+              {/* Direct Detailer Call / Text / Email */}
+              <div className="pt-4 flex flex-wrap items-center justify-center gap-2.5">
                 <a
                   href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`}
-                  className="px-5 py-2.5 rounded-xl bg-red-950/60 border border-red-500/50 text-red-300 font-racing text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-red-900/60"
+                  className="px-4 py-2.5 rounded-xl bg-red-950/60 border border-red-500/50 text-red-300 font-racing text-xs uppercase tracking-wider flex items-center gap-2 hover:bg-red-900/60"
                 >
                   <Phone className="w-4 h-4" />
-                  <span>Call or Text: {BUSINESS_INFO.phoneDisplay}</span>
+                  <span>Call/Text: {BUSINESS_INFO.phoneDisplay}</span>
+                </a>
+
+                <a
+                  href={`mailto:${BUSINESS_INFO.email}`}
+                  className="px-4 py-2.5 rounded-xl bg-slate-900 border border-slate-700 text-slate-300 font-racing text-xs uppercase tracking-wider flex items-center gap-2 hover:text-white"
+                >
+                  <Mail className="w-4 h-4 text-emerald-400" />
+                  <span>{BUSINESS_INFO.email}</span>
                 </a>
 
                 <button

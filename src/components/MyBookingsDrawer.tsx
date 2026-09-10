@@ -184,7 +184,13 @@ export const MyBookingsDrawer: React.FC<MyBookingsDrawerProps> = ({
             className="w-full py-2.5 px-3 rounded-xl bg-red-950/60 border border-red-500/50 text-red-300 font-racing text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-red-900/60"
           >
             <Phone className="w-3.5 h-3.5" />
-            <span>Need Help? Call (316) 214-3829</span>
+            <span>Need Help? Call {BUSINESS_INFO.phoneDisplay}</span>
+          </a>
+          <a
+            href={`mailto:${BUSINESS_INFO.email}`}
+            className="w-full py-2 px-3 rounded-xl bg-slate-900 border border-slate-800 text-slate-400 font-racing text-xs uppercase tracking-wider flex items-center justify-center gap-2 hover:text-white"
+          >
+            <span>Email: {BUSINESS_INFO.email}</span>
           </a>
         </div>
 

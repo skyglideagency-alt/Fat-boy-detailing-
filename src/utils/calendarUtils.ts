@@ -1,4 +1,5 @@
 import { TimeSlot, AppointmentBooking } from '../types';
+import { BUSINESS_INFO } from '../data/servicesData';
 
 export const TIME_SLOT_TEMPLATES: { time: string; hour: number; minute: number; period: 'morning' | 'afternoon' | 'evening' }[] = [
   { time: '08:00 AM', hour: 8, minute: 0, period: 'morning' },
@@ -82,7 +83,7 @@ export function createGoogleCalendarUrl(booking: AppointmentBooking): string {
     `Vehicle: ${booking.vehicleYear} ${booking.vehicleMake} ${booking.vehicleModel} (${booking.vehicleColor})\n` +
     `Service: ${booking.serviceName} ($${booking.totalPrice})\n` +
     `Service Mode: ${booking.serviceMode === 'mobile' ? `Mobile Service at: ${booking.address || 'Wichita area'}` : 'Shop Drop-off in Wichita, KS'}\n` +
-    `Detailer Phone: (316) 214-3829\n` +
+    `Detailer Phone: ${BUSINESS_INFO.phoneDisplay} | Email: ${BUSINESS_INFO.email}\n` +
     `"Done with heart, soul, and love"`
   );
   const location = encodeURIComponent(booking.address || 'Wichita, Kansas');
@@ -129,7 +130,7 @@ export function downloadIcsFile(booking: AppointmentBooking): void {
     `DTSTART:${formatUtc(startDate)}`,
     `DTEND:${formatUtc(endDate)}`,
     `SUMMARY:Fatboy Detailing - ${booking.serviceName}`,
-    `DESCRIPTION:Auto Detailing appointment for ${booking.vehicleYear} ${booking.vehicleMake} ${booking.vehicleModel}. Ref: ${booking.bookingRef}. Phone: (316) 214-3829.`,
+    `DESCRIPTION:Auto Detailing appointment for ${booking.vehicleYear} ${booking.vehicleMake} ${booking.vehicleModel}. Ref: ${booking.bookingRef}. Phone: ${BUSINESS_INFO.phoneDisplay}. Email: ${BUSINESS_INFO.email}.`,
     `LOCATION:${booking.address || 'Wichita, KS'}`,
     'STATUS:CONFIRMED',
     'END:VEVENT',

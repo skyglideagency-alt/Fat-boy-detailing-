@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { MapPin, Heart, Check, Phone } from 'lucide-react';
+import { MapPin, Heart, Check, Phone, Mail } from 'lucide-react';
 import { BUSINESS_INFO, WICHITA_SERVICE_AREAS } from '../data/servicesData';
 import logoImg from '../assets/images/logo.jpg';
 
@@ -179,22 +179,36 @@ export const AboutAndServiceArea: React.FC = () => {
                 )}
               </form>
 
-              {/* Fast Call Action */}
-              <div className="p-3.5 rounded-xl bg-gradient-to-r from-red-950/40 to-slate-900 border border-red-500/30 flex items-center justify-between">
-                <div>
-                  <span className="text-[10px] font-racing uppercase tracking-wider text-red-400 block">
-                    Questions or Custom Inquiries?
-                  </span>
-                  <span className="text-xs font-bold text-white">
-                    Direct Line: {BUSINESS_INFO.phoneDisplay}
-                  </span>
+              {/* Fast Call & Email Action */}
+              <div className="p-3.5 rounded-xl bg-gradient-to-r from-red-950/40 via-slate-900 to-slate-900 border border-red-500/30 space-y-2.5">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] font-racing uppercase tracking-wider text-red-400 block">
+                      Questions or Inquiries?
+                    </span>
+                    <span className="text-xs font-bold text-white">
+                      Direct: {BUSINESS_INFO.phoneDisplay}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <a
+                      href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`}
+                      className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-racing font-bold text-xs uppercase tracking-wider flex items-center gap-1 transition-colors"
+                    >
+                      <Phone className="w-3 h-3" /> Call / Text
+                    </a>
+                    <a
+                      href={`mailto:${BUSINESS_INFO.email}`}
+                      className="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 font-racing font-bold text-xs uppercase tracking-wider flex items-center gap-1 transition-colors"
+                    >
+                      <Mail className="w-3 h-3 text-emerald-400" /> Email
+                    </a>
+                  </div>
                 </div>
-                <a
-                  href={`tel:${BUSINESS_INFO.phone.replace(/[^0-9]/g, '')}`}
-                  className="px-3 py-1.5 rounded-lg bg-red-600 hover:bg-red-500 text-white font-racing font-bold text-xs uppercase tracking-wider flex items-center gap-1 transition-colors"
-                >
-                  <Phone className="w-3 h-3" /> Call / Text
-                </a>
+                <div className="text-[11px] text-slate-400 flex items-center gap-1.5 pt-1 border-t border-slate-800/80">
+                  <MapPin className="w-3 h-3 text-[#00e676]" />
+                  <span>{BUSINESS_INFO.address}</span>
+                </div>
               </div>
 
             </div>
