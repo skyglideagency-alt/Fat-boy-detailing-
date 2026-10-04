@@ -153,4 +153,5 @@ export const BUSINESS_INFO = {
   locationCity: 'Wichita, Kansas',
   hours: 'Always Open (7 Days)',
   urgencyBanner: 'WE HAVE OPEN SPOTS FOR TODAY — CALL OR TEXT TO BOOK YOUR APPOINTMENT',
+  web3FormsAccessKey: 'e5a1392d-6bbf-44cd-b096-3038c546d796',
 };

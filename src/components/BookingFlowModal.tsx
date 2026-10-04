@@ -16,6 +16,7 @@ import {
   ArrowLeft,
   ChevronRight,
   ShieldCheck,
+  Loader2,
 } from 'lucide-react';
 import { SERVICE_PACKAGES, ADD_ON_SERVICES, VEHICLE_CONFIGS, BUSINESS_INFO } from '../data/servicesData';
 import { VehicleType, AppointmentBooking } from '../types';
@@ -77,6 +78,9 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
 
   // Resulting confirmed booking object
   const [confirmedBooking, setConfirmedBooking] = useState<AppointmentBooking | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [emailNotificationSent, setEmailNotificationSent] = useState<boolean>(false);
 
   // Sync initial props
   useEffect(() => {
@@ -115,16 +119,33 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
     );
   };
 
-  // Handle final submission
-  const handleSubmitBooking = (e: React.FormEvent) => {
+  // Handle final submission via Web3Forms
+  const handleSubmitBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customerName || !customerPhone) {
-      alert('Please provide your name and phone number for the booking confirmation.');
+    if (!customerName.trim() || !customerPhone.trim()) {
+      setSubmitError('Please provide your full name and phone number for the booking confirmation.');
       return;
     }
 
+    setIsSubmitting(true);
+    setSubmitError(null);
+
     const randomDigits = Math.floor(1000 + Math.random() * 9000);
     const bookingRef = `FBD-${randomDigits}`;
+
+    const selectedAddOnNames =
+      selectedAddOnIds
+        .map((id) => {
+          const addon = ADD_ON_SERVICES.find((a) => a.id === id);
+          return addon ? `${addon.name} (+$${addon.price})` : null;
+        })
+        .filter(Boolean)
+        .join(', ') || 'None';
+
+    const serviceLocationText =
+      serviceMode === 'mobile'
+        ? address.trim() || 'Wichita area mobile service'
+        : `Shop Drop-off (${BUSINESS_INFO.address})`;
 
     const newBooking: AppointmentBooking = {
       id: `booking-${Date.now()}`,
@@ -139,18 +160,76 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
       selectedAddOns: selectedAddOnIds,
       date: selectedDate,
       timeSlot: selectedTimeSlot,
-      customerName,
-      customerPhone,
-      customerEmail,
+      customerName: customerName.trim(),
+      customerPhone: customerPhone.trim(),
+      customerEmail: customerEmail.trim(),
       serviceMode,
-      address: serviceMode === 'mobile' ? address || 'Wichita area mobile service' : 'Wichita Shop Drop-off',
-      notes,
+      address: serviceLocationText,
+      notes: notes.trim(),
       totalPrice,
       estimatedDurationMinutes: totalDurationMinutes,
       status: 'confirmed',
       createdAt: new Date().toISOString(),
     };
 
+    try {
+      const web3Payload = {
+        access_key: BUSINESS_INFO.web3FormsAccessKey,
+        subject: `New Detailing Appointment [${bookingRef}] - ${newBooking.customerName} (${selectedDate} @ ${selectedTimeSlot})`,
+        from_name: 'Fatboy Detailing Booking System',
+        name: newBooking.customerName,
+        phone: newBooking.customerPhone,
+        email: newBooking.customerEmail || BUSINESS_INFO.email,
+        Booking_Reference: bookingRef,
+        Service_Package: `${currentPackage.name} ($${baseServicePrice})`,
+        Add_On_Upgrades: selectedAddOnNames,
+        Appointment_Date: selectedDate,
+        Appointment_Time: selectedTimeSlot,
+        Vehicle_Category: VEHICLE_CONFIGS[selectedVehicleType].name,
+        Vehicle_Details: `${newBooking.vehicleYear} ${newBooking.vehicleMake} ${newBooking.vehicleModel} (${newBooking.vehicleColor})`,
+        Service_Mode: serviceMode === 'mobile' ? 'Mobile Service (We Come To You)' : 'Shop Drop-Off',
+        Service_Address: serviceLocationText,
+        Estimated_Total: `$${totalPrice}`,
+        Estimated_Duration: `${Math.floor(totalDurationMinutes / 60)}h ${totalDurationMinutes % 60}m (${totalDurationMinutes} mins)`,
+        Special_Notes: newBooking.notes || 'None provided',
+        message: `New Appointment Scheduled via Fatboy Detailing Website:\n\n` +
+          `• Booking Reference: ${bookingRef}\n` +
+          `• Customer Name: ${newBooking.customerName}\n` +
+          `• Phone Number: ${newBooking.customerPhone}\n` +
+          `• Email: ${newBooking.customerEmail || 'Not provided'}\n` +
+          `• Service Package: ${currentPackage.name}\n` +
+          `• Add-Ons: ${selectedAddOnNames}\n` +
+          `• Date & Time: ${selectedDate} at ${selectedTimeSlot}\n` +
+          `• Vehicle: ${newBooking.vehicleYear} ${newBooking.vehicleMake} ${newBooking.vehicleModel} (${newBooking.vehicleColor}) - ${VEHICLE_CONFIGS[selectedVehicleType].name}\n` +
+          `• Service Location: ${serviceMode === 'mobile' ? 'Mobile Service' : 'Shop Drop-Off'} — ${serviceLocationText}\n` +
+          `• Total Estimated Price: $${totalPrice}\n` +
+          `• Notes: ${newBooking.notes || 'None'}`,
+      };
+
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify(web3Payload),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setEmailNotificationSent(true);
+      } else {
+        setSubmitError(result.message || 'Could not send email notification. Please try again.');
+        setIsSubmitting(false);
+        return;
+      }
+    } catch {
+      setSubmitError('Network error while submitting your booking. Please check your connection and try again.');
+      setIsSubmitting(false);
+      return;
+    }
+
+    setIsSubmitting(false);
     saveBooking(newBooking);
     setConfirmedBooking(newBooking);
     onBookingComplete(newBooking);
@@ -582,13 +661,20 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
           {/* STEP 4: Customer Details & Confirmation */}
           {step === 4 && (
             <form onSubmit={handleSubmitBooking} className="space-y-6">
+              <input type="hidden" name="access_key" value={BUSINESS_INFO.web3FormsAccessKey} />
               <div>
                 <h4 className="font-racing text-lg font-bold uppercase text-white mb-1">
                   Customer Contact & Booking Review
                 </h4>
                 <p className="text-xs text-slate-400 mb-4">
-                  We will send your calendar invite and text confirmation for the appointment.
+                  We will send your appointment confirmation directly to our detailing team and prepare your calendar invite.
                 </p>
+
+                {submitError && (
+                  <div className="mb-4 p-3 rounded-xl bg-red-950/70 border border-red-500/50 text-red-200 text-xs">
+                    {submitError}
+                  </div>
+                )}
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
@@ -599,6 +685,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                       <User className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                       <input
                         type="text"
+                        name="name"
                         required
                         placeholder="John Doe"
                         value={customerName}
@@ -616,6 +703,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                       <Phone className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                       <input
                         type="tel"
+                        name="phone"
                         required
                         placeholder="(316) 555-0199"
                         value={customerPhone}
@@ -633,6 +721,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                       <Mail className="w-4 h-4 text-slate-500 absolute left-3 top-3" />
                       <input
                         type="email"
+                        name="email"
                         placeholder="john@example.com"
                         value={customerEmail}
                         onChange={(e) => setCustomerEmail(e.target.value)}
@@ -646,6 +735,7 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                       Special Notes or Areas of Concern
                     </label>
                     <textarea
+                      name="notes"
                       rows={2}
                       placeholder="e.g. Dog hair in rear seats, stains on front floor mats, or gated driveway code."
                       value={notes}
@@ -698,10 +788,20 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                 <button
                   type="submit"
                   id="confirm-booking-btn"
-                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-[#00e676] to-emerald-400 text-black font-racing font-bold text-sm uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-xl shadow-emerald-500/30"
+                  disabled={isSubmitting}
+                  className="px-8 py-3.5 rounded-xl bg-gradient-to-r from-emerald-500 via-[#00e676] to-emerald-400 text-black font-racing font-bold text-sm uppercase tracking-wider hover:brightness-110 active:scale-95 transition-all flex items-center gap-2 cursor-pointer shadow-xl shadow-emerald-500/30 disabled:opacity-60 disabled:cursor-not-allowed"
                 >
-                  <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
-                  <span>Confirm Appointment</span>
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Sending Booking...</span>
+                    </>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-4 h-4 stroke-[2.5]" />
+                      <span>Confirm Appointment</span>
+                    </>
+                  )}
                 </button>
               </div>
             </form>
@@ -724,8 +824,14 @@ export const BookingFlowModal: React.FC<BookingFlowModalProps> = ({
                   You're On The Calendar!
                 </h3>
                 <p className="text-sm text-slate-300 mt-2 max-w-lg mx-auto">
-                  Thank you, <strong className="text-white">{confirmedBooking.customerName}</strong>! Your car cleaning session has been locked in with Fatboy Detailing.
+                  Thank you, <strong className="text-white">{confirmedBooking.customerName}</strong>! Your car cleaning session has been locked in and emailed directly to Fatboy Detailing.
                 </p>
+                {emailNotificationSent && (
+                  <div className="inline-flex items-center gap-1.5 mt-2 px-3 py-1 rounded-full bg-emerald-950/70 border border-emerald-500/40 text-emerald-300 text-xs">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-[#00e676]" />
+                    <span>Instant booking notification delivered to {BUSINESS_INFO.email}</span>
+                  </div>
+                )}
               </div>
 
               {/* Reference Card */}

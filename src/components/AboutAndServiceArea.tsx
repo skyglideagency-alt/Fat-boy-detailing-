@@ -1,12 +1,21 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { MapPin, Heart, Check, Phone, Mail } from 'lucide-react';
+import { MapPin, Heart, Check, Phone, Mail, Send, Loader2, CheckCircle2 } from 'lucide-react';
 import { BUSINESS_INFO, WICHITA_SERVICE_AREAS } from '../data/servicesData';
 import logoImg from '../assets/images/logo.jpg';
 
 export const AboutAndServiceArea: React.FC = () => {
   const [zipInput, setZipInput] = useState('');
   const [checkResult, setCheckResult] = useState<string | null>(null);
+
+  // Quick Inquiry Form states (Web3Forms)
+  const [inquiryName, setInquiryName] = useState('');
+  const [inquiryPhone, setInquiryPhone] = useState('');
+  const [inquiryEmail, setInquiryEmail] = useState('');
+  const [inquiryMessage, setInquiryMessage] = useState('');
+  const [isSendingInquiry, setIsSendingInquiry] = useState(false);
+  const [inquirySuccess, setInquirySuccess] = useState(false);
+  const [inquiryError, setInquiryError] = useState<string | null>(null);
 
   const handleCheckArea = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,6 +32,52 @@ export const AboutAndServiceArea: React.FC = () => {
       setCheckResult('yes');
     } else {
       setCheckResult('ask');
+    }
+  };
+
+  const handleQuickInquiry = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inquiryName.trim() || !inquiryPhone.trim()) {
+      setInquiryError('Please enter your name and phone number.');
+      return;
+    }
+
+    setIsSendingInquiry(true);
+    setInquiryError(null);
+    setInquirySuccess(false);
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Accept: 'application/json',
+        },
+        body: JSON.stringify({
+          access_key: BUSINESS_INFO.web3FormsAccessKey,
+          subject: `New Detailing Inquiry from ${inquiryName.trim()} - Fatboy Detailing`,
+          from_name: 'Fatboy Detailing Website',
+          name: inquiryName.trim(),
+          phone: inquiryPhone.trim(),
+          email: inquiryEmail.trim() || BUSINESS_INFO.email,
+          message: inquiryMessage.trim() || 'Customer requested a callback / detailing quote.',
+        }),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        setInquirySuccess(true);
+        setInquiryName('');
+        setInquiryPhone('');
+        setInquiryEmail('');
+        setInquiryMessage('');
+      } else {
+        setInquiryError(result.message || 'Something went wrong. Please try again.');
+      }
+    } catch {
+      setInquiryError('Network error. Please try again or call us directly.');
+    } finally {
+      setIsSendingInquiry(false);
     }
   };
 
@@ -177,6 +232,83 @@ export const AboutAndServiceArea: React.FC = () => {
                     </a>
                   </div>
                 )}
+              </form>
+
+              {/* Quick Inquiry / Message Form (Web3Forms) */}
+              <form onSubmit={handleQuickInquiry} className="pt-3 border-t border-slate-800/80 space-y-3">
+                <input type="hidden" name="access_key" value={BUSINESS_INFO.web3FormsAccessKey} />
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-racing uppercase tracking-wider text-[#00e676] font-bold">
+                    Send A Quick Message / Quote Request
+                  </span>
+                  <span className="text-[10px] text-slate-400">Direct to {BUSINESS_INFO.email}</span>
+                </div>
+
+                {inquirySuccess && (
+                  <div className="p-2.5 rounded-xl bg-emerald-950/60 border border-[#00e676]/60 text-emerald-300 text-xs flex items-center gap-2">
+                    <CheckCircle2 className="w-4 h-4 text-[#00e676] flex-shrink-0" />
+                    <span>Message sent! We will get back to you shortly.</span>
+                  </div>
+                )}
+
+                {inquiryError && (
+                  <div className="p-2.5 rounded-xl bg-red-950/60 border border-red-500/50 text-red-200 text-xs">
+                    {inquiryError}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="Your Name *"
+                    value={inquiryName}
+                    onChange={(e) => setInquiryName(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-[#00e676]"
+                  />
+                  <input
+                    type="tel"
+                    name="phone"
+                    required
+                    placeholder="Phone Number *"
+                    value={inquiryPhone}
+                    onChange={(e) => setInquiryPhone(e.target.value)}
+                    className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-[#00e676]"
+                  />
+                </div>
+
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email Address (Optional)"
+                  value={inquiryEmail}
+                  onChange={(e) => setInquiryEmail(e.target.value)}
+                  className="w-full px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-[#00e676]"
+                />
+
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="message"
+                    placeholder="Vehicle & detailing question (e.g. Full detail for F-150)..."
+                    value={inquiryMessage}
+                    onChange={(e) => setInquiryMessage(e.target.value)}
+                    className="flex-1 px-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs focus:outline-none focus:border-[#00e676]"
+                  />
+                  <button
+                    type="submit"
+                    disabled={isSendingInquiry}
+                    className="px-4 py-2 rounded-xl bg-[#00e676] hover:brightness-110 text-black font-racing font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 cursor-pointer transition-all disabled:opacity-60 flex-shrink-0"
+                  >
+                    {isSendingInquiry ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Send className="w-3.5 h-3.5" />
+                    )}
+                    <span>{isSendingInquiry ? 'Sending' : 'Send'}</span>
+                  </button>
+                </div>
               </form>
 
               {/* Fast Call & Email Action */}
